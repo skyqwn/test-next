@@ -10,7 +10,8 @@ async function fetchWrapperWithTokenHandler<T>(
   body?: unknown,
   init?: RequestInit,
 ): Promise<ApiResponse<T>> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_LOCAL;
 
   // 기본 설정
   const headers: Record<string, string> = {

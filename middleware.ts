@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const accessToken = request.cookies.get("accessToken")?.value;
+  const accessToken = request.cookies.get("access_token")?.value;
   console.log('🚀 ~ middleware.ts:5 ~ middleware ~ accessToken:', accessToken);
 }
 

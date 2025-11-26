@@ -2,7 +2,7 @@ import { GET } from "@/api/httpMethod";
 
 export const shootAPi = {
   getPosts: async () => {
-    return await GET('/posts');
+    return await GET('auth/token');
   },
 
   getUsers: async () => {
