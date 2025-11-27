@@ -1,4 +1,4 @@
-// 나중에 서버에서 내려오는 방향으로 바꾸면 될듯
+//TODO: 나중에 서버에서 내려오는 방향으로 바꾸면 될듯
 export interface ApiResponse<T> {
   success: boolean;
   result: T;
@@ -10,7 +10,6 @@ async function fetchWrapperWithTokenHandler<T>(
   body?: unknown,
   init?: RequestInit,
 ): Promise<ApiResponse<T>> {
-  // const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_LOCAL;
 
   // 기본 설정
@@ -37,9 +36,11 @@ async function fetchWrapperWithTokenHandler<T>(
 
   const response = await fetch(`${apiUrl}${uri}`, requestInit);
 
+  //if(!response)
+
   try {
     const data = await response.json();
-    return data as ApiResponse<T>;
+    return data;
   } catch (error) {
     console.log("에러에러에러", error);
     return { success: false, result: null as T, message: `Fetch failed` };
@@ -75,7 +76,7 @@ export function PUT<T>(url: string, body?: unknown, init?: RequestInit) {
 }
 
 export function DELETE<T>(url: string, body?: unknown, init?: RequestInit) {
-  return fetchWrapperWithTokenHandler<T>(url, undefined, {
+  return fetchWrapperWithTokenHandler<T>(url, body, {
     method: "DELETE",
     ...init,
   });

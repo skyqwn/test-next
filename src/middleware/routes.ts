@@ -1,6 +1,5 @@
 export const publicUrls: Record<string, boolean> = {
-  "/auth/login": true,
-  "/shoot": true,
+  "/login": true,
 };
 
 export function isPublicRoute(pathname: string): boolean {

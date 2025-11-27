@@ -1,22 +1,28 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { ServerFetchBoundary } from "@/components/common/ServerFetchBoundary";
 
 import ShootListsSkeleton from "./_components/skeletons/shootLists/ShootListsSkeleton";
 import ShootLists from "./_components/ShootLists";
 
 import { getPostsQueryOptions } from "./query/jsonPlaceholderQuery";
+import ErrorHandlingWrapper from "@/components/common/ErrorHandlingWrapper";
+import ErrorFallback from "@/components/common/ErrorFallback";
 
 const page = () => {
   const serverFetchOptions = [
     getPostsQueryOptions(),
-
   ]
 
-  return <Suspense fallback={ <ShootListsSkeleton/>}>
-            <ServerFetchBoundary fetchOptions={serverFetchOptions}>
-              <ShootLists/>
-            </ServerFetchBoundary>
-          </Suspense>
+  return (
+    <ErrorHandlingWrapper
+      fallbackComponent={ErrorFallback}
+      suspenseFallback={<ShootListsSkeleton/>}
+    >
+      <ServerFetchBoundary fetchOptions={serverFetchOptions}>
+        <ShootLists/>
+      </ServerFetchBoundary>
+    </ErrorHandlingWrapper>
+  )
 };
 
 export default page;
