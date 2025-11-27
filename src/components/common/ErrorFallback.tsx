@@ -1,12 +1,10 @@
 "use client";
 
 import { FallbackProps } from './ErrorBoundary'
-import { useRouter } from "next/navigation";
 
 export default function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
-   const router = useRouter();
   const handleReset = () => {
-    router.refresh();  // 서버 컴포넌트 재실행을 위해 필요
+    // Streaming 패턴: 에러가 클라이언트에서 발생하므로 resetErrorBoundary만으로 충분
     resetErrorBoundary();
   }
 

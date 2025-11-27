@@ -14,24 +14,22 @@ type Props = {
   children: ReactNode | ReactNode[];
 };
 
-export const ServerFetchBoundary = async({ fetchOptions, children }: Props) => {
+export const ServerFetchBoundary = ({ fetchOptions, children }: Props) => {
   const queryClient = getQueryClient();
 
-  console.log("[SERVER] 프리패치 시작");
-
+  // Streaming 패턴: await 없이 prefetchQuery 사용
+  // pending 상태로 dehydrate → 클라이언트에서 useSuspenseQuery가 Promise 사용
   if (Array.isArray(fetchOptions)) {
     for (const option of fetchOptions) {
-      console.log("[SERVER] 패치 중:", option.queryKey);
-      await queryClient.fetchQuery(option);
-      console.log("[SERVER] 패치 완료:", option.queryKey);
+      console.log("서버 패칭")
+      // queryClient.prefetchQuery(option);  // no await!
+      queryClient.fetchQuery(option);  // no await!
     }
   } else {
-    console.log("[SERVER] 단일 패치 중:", fetchOptions.queryKey);
-    await queryClient.fetchQuery(fetchOptions);
-    console.log("[SERVER] 단일 패치 완료:", fetchOptions.queryKey);
+    console.log("서버 패칭")
+    // queryClient.prefetchQuery(fetchOptions);  // no await!
+    queryClient.fetchQuery(fetchOptions);  // no await!
   }
-
-  console.log("[SERVER] 모든 프리패치 완료");
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
