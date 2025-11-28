@@ -12,7 +12,7 @@ function makeQueryClient() {
     defaultOptions: {
       queries: {
         staleTime: defaultStaleTime,
-        retry: false
+        // retry: false
       },
       dehydrate: {
         shouldDehydrateQuery: (query) =>

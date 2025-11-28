@@ -5,7 +5,9 @@ import { refreshTokenFetch } from "./middleware/auth";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("access_token")?.value;
+  console.log('🚀 ~ middleware.ts:8 ~ middleware ~ accessToken:', accessToken);
   const refreshToken = request.cookies.get("refresh_token")?.value;
+  console.log('🚀 ~ middleware.ts:10 ~ middleware ~ refreshToken:', refreshToken);
   const isPublic = isPublicRoute(pathname);
 
   if (pathname.startsWith('/api')) {
@@ -21,8 +23,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!isPublic && !accessToken && refreshToken) {
-    const result = await refreshTokenFetch(request, refreshToken);
-    return result.response;
+    // const result = await refreshTokenFetch(request, refreshToken);
+    // return result.response;
+    return NextResponse.next();
   }
 
   if (!isPublic && !accessToken && !refreshToken) {

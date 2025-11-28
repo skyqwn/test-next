@@ -14,7 +14,7 @@ type Props = {
   children: ReactNode | ReactNode[];
 };
 
-export const ServerFetchBoundary = ({ fetchOptions, children }: Props) => {
+export const ServerFetchBoundary = async ({ fetchOptions, children }: Props) => {
   const queryClient = getQueryClient();
 
   // Streaming 패턴: await 없이 prefetchQuery 사용
@@ -23,12 +23,12 @@ export const ServerFetchBoundary = ({ fetchOptions, children }: Props) => {
     for (const option of fetchOptions) {
       console.log("서버 패칭")
       // queryClient.prefetchQuery(option);  // no await!
-      queryClient.fetchQuery(option);  // no await!
+      await queryClient.fetchQuery(option);  // no await!
     }
   } else {
     console.log("서버 패칭")
     // queryClient.prefetchQuery(fetchOptions);  // no await!
-    queryClient.fetchQuery(fetchOptions);  // no await!
+    await queryClient.fetchQuery(fetchOptions);  // no await!
   }
 
   return (
