@@ -19,5 +19,13 @@ export const shootAPi = {
 
   getTodos: async () => {
     return await GET('/todos?_limit=10');
-  }
+  },
+
+  // 테스트용 mutation (50% 확률 에러)
+  testErrorMutation: async () => {
+    if (Math.random() < 0.5) {
+      throw new Error('Mutation 에러 테스트!');
+    }
+    return '성공!';
+  },
 }

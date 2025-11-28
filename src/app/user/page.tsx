@@ -8,6 +8,7 @@ const User = () => {
     getUserQueryOptions()
   ]
 
+
   return <Suspense fallback={"user 로딩중"}>
             <ServerFetchBoundary fetchOptions={serverFetchOptions}>
               <UserCard/>

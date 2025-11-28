@@ -1,15 +1,26 @@
-//TODO: 나중에 서버에서 내려오는 방향으로 바꾸면 될듯
-export interface ApiResponse<T> {
-  success: boolean;
-  result: T;
+// 커스텀 에러 클래스
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string
+  ) {
+    super(message);
+    this.name = "ApiError";
+  }
+}
+
+// API 응답 타입
+interface ApiResponse<T> {
+  code: string;
   message: string;
+  contents: T;
 }
 
 async function fetchWrapperWithTokenHandler<T>(
   uri: string,
   body?: unknown,
   init?: RequestInit,
-): Promise<ApiResponse<T>> {
+): Promise<T> {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_LOCAL;
 
   // 기본 설정
@@ -22,10 +33,18 @@ async function fetchWrapperWithTokenHandler<T>(
     headers["Content-Type"] = "application/json";
   }
 
+  // 서버 사이드에서 쿠키 전달
+  const isServer = typeof window === "undefined";
+  if (isServer) {
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    headers["Cookie"] = cookieStore.toString();
+  }
+
   const requestInit: RequestInit = {
     ...init,
     headers,
-    credentials: "include", // 항상 포함
+    credentials: "include",
     cache: init?.cache || "no-cache",
     body: body
       ? body instanceof FormData
@@ -36,15 +55,19 @@ async function fetchWrapperWithTokenHandler<T>(
 
   const response = await fetch(`${apiUrl}${uri}`, requestInit);
 
-  //if(!response)
-
-  try {
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.log("에러에러에러", error);
-    return { success: false, result: null as T, message: `Fetch failed` };
+  // HTTP 에러
+  if (!response.ok) {
+    throw new ApiError(response.status, `HTTP Error ${response.status}`);
   }
+
+  const data: ApiResponse<T> = await response.json();
+
+  // API 응답 에러
+  if (data.code !== "OK") {
+    throw new ApiError(400, data.message || "API Error");
+  }
+
+  return data.contents;
 }
 
 export function GET<T>(url: string, init?: RequestInit) {
