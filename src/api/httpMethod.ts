@@ -1,13 +1,11 @@
-// 커스텀 에러 클래스
-export class ApiError extends Error {
-  constructor(
-    public status: number,
-    message: string
-  ) {
-    super(message);
-    this.name = "ApiError";
-  }
-}
+import {
+  ApiError,
+  BadRequestError,
+  UnauthorizedError,
+  ForbiddenError,
+  NotFoundError,
+  InternalServerError,
+} from "./error";
 
 // API 응답 타입
 interface ApiResponse<T> {
@@ -55,9 +53,25 @@ async function fetchWrapperWithTokenHandler<T>(
 
   const response = await fetch(`${apiUrl}${uri}`, requestInit);
 
-  // HTTP 에러
+  // HTTP 에러 - status별 에러 클래스 분기
   if (!response.ok) {
-    throw new ApiError(response.status, `HTTP Error ${response.status}`);
+    const errorData = await response.json().catch(() => ({}));
+    const message = errorData.message || `HTTP Error ${response.status}`;
+    // TODO:401,403은 미들웨어에서 서버로 401에러 받기전 처리하지만 방법이 있을수도..
+    switch (response.status) {
+      case 400:
+        throw new BadRequestError(message);
+      case 401:
+        throw new UnauthorizedError(message);
+      case 403:
+        throw new ForbiddenError(message);
+      case 404:
+        throw new NotFoundError(message);
+      case 500:
+        throw new InternalServerError(message);
+      default:
+        throw new ApiError(response.status, message);
+    }
   }
 
   const data: ApiResponse<T> = await response.json();

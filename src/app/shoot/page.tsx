@@ -4,13 +4,14 @@ import { ServerFetchBoundary } from "@/components/common/ServerFetchBoundary";
 import ShootListsSkeleton from "./_components/skeletons/shootLists/ShootListsSkeleton";
 import ShootLists from "./_components/ShootLists";
 
-import { getPostsQueryOptions } from "./query/jsonPlaceholderQuery";
+import { postsKeys } from "./query/jsonPlaceholderQuery";
 import ErrorHandlingWrapper from "@/components/common/ErrorHandlingWrapper";
 import ErrorFallback from "@/components/common/ErrorFallback";
 
 const page = () => {
   const serverFetchOptions = [
-    getPostsQueryOptions(),
+    postsKeys.all(),  // query-key-factory 사용
+    // postsKeys.detail(123),  // id가 필요한 경우 예시
   ]
 
   return (

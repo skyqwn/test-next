@@ -1,4 +1,5 @@
 import { GET } from "@/api/httpMethod";
+import { API_PATH } from "@/api/path";
 
 export const shootAPi = {
   getPosts: async () => {
@@ -6,11 +7,15 @@ export const shootAPi = {
     if (Math.random() < 0.5) {
       throw new Error('랜덤 에러 발생! (50% 확률)');
     }
-    return await GET('auth/token');
+    return await GET(API_PATH.shoot.posts());
+  },
+
+  getPostById: async (id: number) => {
+    return await GET(API_PATH.shoot.postDetail(id));
   },
 
   getUser: async () => {
-    return await GET('/user/me');
+    return await GET(API_PATH.user.me());
   },
 
   getAlbums: async () => {
