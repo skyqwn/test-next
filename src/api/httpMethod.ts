@@ -118,3 +118,35 @@ export function DELETE<T>(url: string, body?: unknown, init?: RequestInit) {
     ...init,
   });
 }
+
+// ============================================
+// 외부 API용 (JSONPlaceholder 등) - 페이지네이션 헤더 지원
+// ============================================
+
+export interface PaginatedResponse<T> {
+  data: T;
+  totalCount: number;
+}
+
+/**
+ * 외부 API GET 요청 (x-total-count 헤더 포함)
+ * JSONPlaceholder 등 외부 API에서 페이지네이션할 때 사용
+ */
+export async function GET_EXTERNAL<T>(
+  url: string,
+  init?: RequestInit
+): Promise<PaginatedResponse<T>> {
+  const response = await fetch(url, {
+    method: "GET",
+    ...init,
+  });
+
+  if (!response.ok) {
+    throw new ApiError(response.status, `HTTP Error ${response.status}`);
+  }
+
+  const data: T = await response.json();
+  const totalCount = parseInt(response.headers.get("x-total-count") || "0", 10);
+
+  return { data, totalCount };
+}

@@ -4,10 +4,17 @@ import {
   type FetchQueryOptions,
   HydrationBoundary,
   dehydrate,
+  QueryKey,
+  QueryFunction,
 } from "@tanstack/react-query";
 import { getQueryClient } from "@/shared/libs/tanstack-query/client";
 
-export type FetchOptions = Pick<FetchQueryOptions, "queryKey" | "queryFn">;
+// query-key-factory와 호환되는 타입
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type FetchOptions = {
+  queryKey: QueryKey;
+  queryFn: QueryFunction<unknown, any>;
+};
 
 type Props = {
   fetchOptions: FetchOptions[] | FetchOptions;

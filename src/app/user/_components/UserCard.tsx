@@ -5,8 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useUserQuery } from "../query/userQuery";
 import { shootAPi } from "@/api/shoot/api";
 
+interface UserData {
+  compNm: string;
+  authTypeCd: string;
+}
+
 const UserCard = () => {
-  const {data} = useUserQuery();
+  const {data} = useUserQuery() as { data: UserData };
 
   const testMutation = useMutation({
     mutationFn: shootAPi.testErrorMutation,

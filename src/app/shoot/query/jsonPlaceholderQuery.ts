@@ -3,8 +3,8 @@ import { shootAPi } from "@/api/shoot/api";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 
-  
-export const postsKeys = createQueryKeys('posts', {
+
+export const postsQueries = createQueryKeys('posts', {
   // 전체 조회 - 파라미터 없음
   all: () => ({
     queryKey: ['all'],
@@ -19,9 +19,12 @@ export const postsKeys = createQueryKeys('posts', {
 
 // Hooks
 export const usePostsQuery = () => {
-  return useSuspenseQuery(postsKeys.all());
+  return useSuspenseQuery(postsQueries.all());
 };
 
 export const usePostDetailQuery = (id: number) => {
-  return useSuspenseQuery(postsKeys.detail(id));
+  return useSuspenseQuery({
+    ...postsQueries.detail(id),
+    staleTime: 5 * 60 * 1000,
+  });
 };
